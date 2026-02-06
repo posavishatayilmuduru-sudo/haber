@@ -1,0 +1,10 @@
+# Cloudflare Pages Redirects
+
+# SPA fallback
+/*    /index.html   200
+
+# www olmadan redirect (eğer custom domain kullanılıyorsa)
+# https://www.gundemradar.com/*  https://gundemradar.com/:splat  301
+
+# HTTP to HTTPS redirect (Cloudflare otomatik yapıyor ama ek güvenlik için)
+http://:domain/*  https://:domain/:splat  301

@@ -1,0 +1,26 @@
+# Gündem Radar - robots.txt
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://gundemradar.pages.dev/sitemap.xml
+
+# Özel crawler'lar için ayarlar
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# Kötü bot'ları engelle
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
