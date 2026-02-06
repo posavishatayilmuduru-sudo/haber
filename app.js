@@ -124,18 +124,11 @@ async function loadCategoryNews(category, retryCount = 0) {
 }
 
 /**
- * API'den haber çek
+ * API'den haber çek - Cloudflare Worker Proxy kullanarak
  */
 async function fetchNews(query) {
-    const params = new URLSearchParams({
-        q: query,
-        language: 'en', // Türkçe sonuç çok az, İngilizce daha iyi
-        sortBy: 'publishedAt',
-        pageSize: 6,
-        apiKey: CONFIG.NEWS_API_KEY
-    });
-    
-    const url = `${CONFIG.NEWS_API_URL}?${params}`;
+    // Cloudflare Pages Function endpoint
+    const url = `/api/news?q=${encodeURIComponent(query)}`;
     
     try {
         const response = await fetch(url);
