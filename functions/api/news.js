@@ -1,42 +1,29 @@
-// Cloudflare Worker - API Proxy
-// Bu dosya Cloudflare Pages Functions olarak çalışacak
+export async function onRequest() {
+  const feeds = [
+    'https://www.ntv.com.tr/gundem.rss',
+    'https://www.hurriyet.com.tr/rss/gundem',
+    'https://www.trthaber.com/sondakika_articles.rss'
+  ];
 
-export async function onRequest(context) {
-    const { request } = context;
-    const url = new URL(request.url);
-    const query = url.searchParams.get('q') || 'news';
-    
-    // NewsAPI key
-    const API_KEY = 'b56562cfcedb405e93435b3bbfade5de';
-    
-    // NewsAPI URL
-    const apiUrl = `https://newsapi.org/v2/everything?q=${encodeURIComponent(query)}&language=en&sortBy=publishedAt&pageSize=6&apiKey=${API_KEY}`;
-    
-    try {
-        const response = await fetch(apiUrl);
-        const data = await response.json();
-        
-        return new Response(JSON.stringify(data), {
-            status: 200,
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, OPTIONS',
-                'Access-Control-Allow-Headers': 'Content-Type',
-                'Cache-Control': 'public, max-age=300' // 5 dakika cache
-            }
-        });
-    } catch (error) {
-        return new Response(JSON.stringify({ 
-            status: 'error',
-            message: 'API isteği başarısız',
-            error: error.message 
-        }), {
-            status: 500,
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            }
-        });
-    }
+  const parser = new DOMParser();
+  let items = [];
+
+  for (const url of feeds) {
+    const res = await fetch(url);
+    const text = await res.text();
+    const xml = parser.parseFromString(text, "text/xml");
+    const news = [...xml.querySelectorAll("item")].slice(0,5).map(i => ({
+      title: i.querySelector("title")?.textContent,
+      link: i.querySelector("link")?.textContent,
+      source: url,
+      time: i.querySelector("pubDate")?.textContent
+    }));
+    items.push(...news);
+  }
+
+  items.sort((a,b)=> new Date(b.time)-new Date(a.time));
+
+  return new Response(JSON.stringify(items.slice(0,20)), {
+    headers: { 'Content-Type': 'application/json' }
+  });
 }

@@ -1,284 +1,31 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <!-- Meta Tags -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    
-    <!-- SEO Meta Tags -->
-    <title>Gündem Radar - Son Dakika Haberler, Güncel Gelişmeler</title>
-    <meta name="description" content="Türkiye ve dünyadan son dakika haberleri, güncel gelişmeler, trend konular. Anlık haber akışı ile her an gündemde olan olayları takip edin.">
-    <meta name="keywords" content="son dakika, haberler, güncel haberler, trend haberler, dünya haberleri, ekonomi haberleri, spor haberleri, gündem">
-    <meta name="author" content="Gündem Radar">
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-    
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://gundemradar.pages.dev/">
-    <meta property="og:title" content="Gündem Radar - Son Dakika Haberler">
-    <meta property="og:description" content="Türkiye ve dünyadan anlık haber akışı. Her 10 dakikada otomatik güncellenen güncel haberler.">
-    <meta property="og:image" content="https://gundemradar.pages.dev/og-image.jpg">
-    <meta property="og:locale" content="tr_TR">
-    <meta property="og:site_name" content="Gündem Radar">
-    
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="https://gundemradar.pages.dev/">
-    <meta name="twitter:title" content="Gündem Radar - Son Dakika Haberler">
-    <meta name="twitter:description" content="Türkiye ve dünyadan anlık haber akışı">
-    <meta name="twitter:image" content="https://gundemradar.pages.dev/og-image.jpg">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="32x32" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📰</text></svg>">
-    
-    <!-- Preconnect for Performance -->
-    <link rel="preconnect" href="https://newsapi.org">
-    <link rel="dns-prefetch" href="https://newsapi.org">
-    
-    <!-- Canonical URL -->
-    <link rel="canonical" href="https://gundemradar.pages.dev/">
-    
-    <!-- Stylesheet -->
-    <link rel="stylesheet" href="style.css">
-    
-    <!-- Schema.org Structured Data -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "NewsMediaOrganization",
-      "name": "Gündem Radar",
-      "url": "https://gundemradar.pages.dev/",
-      "logo": "https://gundemradar.pages.dev/logo.png",
-      "description": "Türkiye ve dünyadan son dakika haberleri",
-      "sameAs": [
-        "https://twitter.com/gundemradar"
-      ]
-    }
-    </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gündem Radar</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Skip to main content for accessibility -->
-    <a href="#main-content" class="skip-link">Ana içeriğe geç</a>
-    
-    <!-- Header -->
-    <header role="banner">
-        <div class="container">
-            <div class="header-content">
-                <div class="logo-section">
-                    <h1>
-                        <span class="logo-icon">📰</span>
-                        <span class="logo-text">Gündem Radar</span>
-                    </h1>
-                    <p class="tagline">Son Dakika Haberler • Anlık Gündem</p>
-                </div>
-                <div class="header-meta">
-                    <span class="live-indicator">
-                        <span class="pulse"></span>
-                        CANLI
-                    </span>
-                    <span class="update-time" id="lastUpdate">Güncelleniyor...</span>
-                </div>
-            </div>
-        </div>
-    </header>
+<header>
+  <h1>📰 Gündem Radar</h1>
+</header>
 
-    <!-- Main Content -->
-    <main id="main-content" class="container" role="main">
-        
-        <!-- Breaking News Ticker -->
-        <div class="breaking-news" id="breakingNews" aria-live="polite" role="region" aria-label="Önemli haberler">
-            <span class="breaking-label">SON DAKİKA</span>
-            <div class="breaking-content" id="breakingContent">
-                Haberler yükleniyor...
-            </div>
-        </div>
+<main id="news"></main>
 
-        <!-- Ad Space Top -->
-        <aside class="ad-space ad-top" role="complementary" aria-label="Reklam alanı">
-            <!-- Google AdSense Horizontal Banner (728x90 veya responsive) -->
-            <div class="ad-placeholder">
-                <span class="ad-label">Reklam</span>
-            </div>
-        </aside>
-
-        <!-- News Sections -->
-        <section class="news-section" aria-labelledby="trending-title">
-            <div class="section-header">
-                <h2 id="trending-title">
-                    <span class="section-icon">🔥</span>
-                    Trend Haberler
-                </h2>
-                <button class="refresh-btn" onclick="refreshCategory('trending-news')" aria-label="Kategoriyi yenile">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
-                    </svg>
-                </button>
-            </div>
-            <div id="trending-news" class="news-grid" role="list">
-                <div class="loading-skeleton">
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Ad Space Mid -->
-        <aside class="ad-space ad-mid" role="complementary" aria-label="Reklam alanı">
-            <div class="ad-placeholder">
-                <span class="ad-label">Reklam</span>
-            </div>
-        </aside>
-
-        <section class="news-section" aria-labelledby="world-title">
-            <div class="section-header">
-                <h2 id="world-title">
-                    <span class="section-icon">🌍</span>
-                    Dünya Haberleri
-                </h2>
-                <button class="refresh-btn" onclick="refreshCategory('world-news')" aria-label="Kategoriyi yenile">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
-                    </svg>
-                </button>
-            </div>
-            <div id="world-news" class="news-grid" role="list">
-                <div class="loading-skeleton">
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
-                </div>
-            </div>
-        </section>
-
-        <section class="news-section" aria-labelledby="business-title">
-            <div class="section-header">
-                <h2 id="business-title">
-                    <span class="section-icon">💼</span>
-                    Ekonomi
-                </h2>
-                <button class="refresh-btn" onclick="refreshCategory('business-news')" aria-label="Kategoriyi yenile">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
-                    </svg>
-                </button>
-            </div>
-            <div id="business-news" class="news-grid" role="list">
-                <div class="loading-skeleton">
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
-                </div>
-            </div>
-        </section>
-
-        <section class="news-section" aria-labelledby="sports-title">
-            <div class="section-header">
-                <h2 id="sports-title">
-                    <span class="section-icon">⚽</span>
-                    Spor
-                </h2>
-                <button class="refresh-btn" onclick="refreshCategory('sports-news')" aria-label="Kategoriyi yenile">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
-                    </svg>
-                </button>
-            </div>
-            <div id="sports-news" class="news-grid" role="list">
-                <div class="loading-skeleton">
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
-                </div>
-            </div>
-        </section>
-
-        <section class="news-section" aria-labelledby="tech-title">
-            <div class="section-header">
-                <h2 id="tech-title">
-                    <span class="section-icon">💻</span>
-                    Teknoloji
-                </h2>
-                <button class="refresh-btn" onclick="refreshCategory('tech-news')" aria-label="Kategoriyi yenile">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
-                    </svg>
-                </button>
-            </div>
-            <div id="tech-news" class="news-grid" role="list">
-                <div class="loading-skeleton">
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Ad Space Bottom -->
-        <aside class="ad-space ad-bottom" role="complementary" aria-label="Reklam alanı">
-            <div class="ad-placeholder">
-                <span class="ad-label">Reklam</span>
-            </div>
-        </aside>
-
-    </main>
-
-    <!-- Footer -->
-    <footer role="contentinfo">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>Gündem Radar</h3>
-                    <p>Türkiye ve dünyadan anlık haber akışı</p>
-                    <div class="social-links">
-                        <a href="#" aria-label="Twitter" rel="noopener noreferrer">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/>
-                            </svg>
-                        </a>
-                        <a href="#" aria-label="Facebook" rel="noopener noreferrer">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-                <div class="footer-section">
-                    <h4>Kategoriler</h4>
-                    <ul>
-                        <li><a href="#trending-news">Trend Haberler</a></li>
-                        <li><a href="#world-news">Dünya</a></li>
-                        <li><a href="#business-news">Ekonomi</a></li>
-                        <li><a href="#sports-news">Spor</a></li>
-                        <li><a href="#tech-news">Teknoloji</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Bilgi</h4>
-                    <ul>
-                        <li><a href="#" rel="nofollow">Hakkımızda</a></li>
-                        <li><a href="#" rel="nofollow">İletişim</a></li>
-                        <li><a href="#" rel="nofollow">Gizlilik Politikası</a></li>
-                        <li><a href="#" rel="nofollow">Kullanım Şartları</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>© 2026 Gündem Radar. Tüm hakları saklıdır.</p>
-                <p class="update-info">Site otomatik olarak her 10 dakikada güncellenir</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Back to Top Button -->
-    <button id="backToTop" class="back-to-top" aria-label="Yukarı çık" title="Yukarı çık">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M18 15l-6-6-6 6"/>
-        </svg>
-    </button>
-
-    <!-- Scripts -->
-    <script src="app.js"></script>
+<script>
+async function load() {
+  const res = await fetch('/api/news');
+  const data = await res.json();
+  const container = document.getElementById('news');
+  container.innerHTML = data.map(n => `
+    <div class="card">
+      <h3><a href="${n.link}" target="_blank">${n.title}</a></h3>
+      <p>${n.source} • ${n.time}</p>
+    </div>
+  `).join('');
+}
+load();
+</script>
 </body>
 </html>
