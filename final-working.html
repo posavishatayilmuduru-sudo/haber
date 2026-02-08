@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gündem Radar - Anlık Haberler</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .live-badge {
+            background: #ff3366;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .tab.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .news-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .news-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .news-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        .news-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .news-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .news-content {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .news-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            color: #222;
+        }
+
+        .news-desc {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            flex: 1;
+        }
+
+        .news-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: #999;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .news-source {
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .error {
+            text-align: center;
+            padding: 40px 20px;
+            background: white;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .error-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .news-card {
+                flex-direction: column;
+            }
+            
+            .news-image {
+                width: 100%;
+                height: 180px;
+            }
+
+            .logo {
+                font-size: 24px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .news-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .news-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">📡 Gündem Radar</div>
+        <div class="live-badge">● CANLI</div>
+    </div>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab active" data-cat="gundem">🔥 Gündem</button>
+            <button class="tab" data-cat="dunya">🌍 Dünya</button>
+            <button class="tab" data-cat="spor">⚽ Spor</button>
+            <button class="tab" data-cat="ekonomi">💼 Ekonomi</button>
+            <button class="tab" data-cat="teknoloji">💻 Teknoloji</button>
+        </div>
+
+        <div id="gundem" class="section active">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Haberler yükleniyor...</p>
+            </div>
+            <div class="news-grid"></div>
+        </div>
+
+        <div id="dunya" class="section">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Haberler yükleniyor...</p>
+            </div>
+            <div class="news-grid"></div>
+        </div>
+
+        <div id="spor" class="section">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Haberler yükleniyor...</p>
+            </div>
+            <div class="news-grid"></div>
+        </div>
+
+        <div id="ekonomi" class="section">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Haberler yükleniyor...</p>
+            </div>
+            <div class="news-grid"></div>
+        </div>
+
+        <div id="teknoloji" class="section">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Haberler yükleniyor...</p>
+            </div>
+            <div class="news-grid"></div>
+        </div>
+    </div>
+
+    <script>
+        // Örnek haberler - Gerçek RSS verisi gelene kadar
+        const SAMPLE_NEWS = {
+            gundem: [
+                {
+                    title: 'Türkiye\'de önemli gelişme: Yeni yasalar tartışılıyor',
+                    description: 'Meclis\'te görüşülen yeni yasa tasarıları kamuoyunda büyük yankı uyandırdı. Uzmanlar konuyla ilgili görüşlerini paylaştı.',
+                    link: '#',
+                    source: 'NTV',
+                    date: new Date(Date.now() - 1000000),
+                    image: null
+                },
+                {
+                    title: 'İstanbul\'da trafik yoğunluğu rekor kırdı',
+                    description: 'Sabah saatlerinde başlayan yoğunluk akşam saatlerine kadar devam etti. Vatandaşlar alternatif yolları kullanmaya çalıştı.',
+                    link: '#',
+                    source: 'Hürriyet',
+                    date: new Date(Date.now() - 2000000),
+                    image: null
+                },
+                {
+                    title: 'Eğitim sisteminde yeni düzenlemeler',
+                    description: 'Milli Eğitim Bakanlığı tarafından açıklanan yeni düzenlemeler veliler ve öğretmenler tarafından değerlendiriliyor.',
+                    link: '#',
+                    source: 'Sabah',
+                    date: new Date(Date.now() - 3000000),
+                    image: null
+                }
+            ],
+            dunya: [
+                {
+                    title: 'ABD\'de ekonomik veriler beklentileri aştı',
+                    description: 'Açıklanan veriler piyasalarda olumlu karşılandı. Analistler yılın geri kalanı için iyimser konuştu.',
+                    link: '#',
+                    source: 'BBC Türkçe',
+                    date: new Date(Date.now() - 1500000),
+                    image: null
+                },
+                {
+                    title: 'Avrupa\'da enerji krizi devam ediyor',
+                    description: 'Kış aylarına girilirken enerji fiyatlarındaki artış endişe yaratıyor. Ülkeler alternatif çözümler arıyor.',
+                    link: '#',
+                    source: 'DW Türkçe',
+                    date: new Date(Date.now() - 2500000),
+                    image: null
+                }
+            ],
+            spor: [
+                {
+                    title: 'Süper Lig\'de heyecan devam ediyor',
+                    description: 'Hafta sonu oynanan maçlar şampiyonluk yarışını kızıştırdı. Taraftarlar büyük heyecan yaşıyor.',
+                    link: '#',
+                    source: 'Fanatik',
+                    date: new Date(Date.now() - 1800000),
+                    image: null
+                },
+                {
+                    title: 'Milli takım kadrosu açıklandı',
+                    description: 'Teknik direktör yeni dönem için kadroda sürpriz isimlere yer verdi. Futbolseverler kararları tartışıyor.',
+                    link: '#',
+                    source: 'NTV Spor',
+                    date: new Date(Date.now() - 2800000),
+                    image: null
+                }
+            ],
+            ekonomi: [
+                {
+                    title: 'TCMB faiz kararını açıkladı',
+                    description: 'Merkez Bankası\'nın kararı piyasalarda yakından takip edildi. Ekonomistler kararı değerlendirdi.',
+                    link: '#',
+                    source: 'Bloomberg HT',
+                    date: new Date(Date.now() - 2200000),
+                    image: null
+                },
+                {
+                    title: 'Borsa İstanbul güne yükselişle başladı',
+                    description: 'Açılışta yaşanan yükseliş gün boyunca devam etti. Yatırımcılar pozitif havaya dikkat çekti.',
+                    link: '#',
+                    source: 'Dünya',
+                    date: new Date(Date.now() - 3200000),
+                    image: null
+                }
+            ],
+            teknoloji: [
+                {
+                    title: 'Yapay zeka alanında yeni gelişme',
+                    description: 'Teknoloji devleri yapay zeka yarışında yeni adımlar atıyor. Sektör temsilcileri geleceği yorumladı.',
+                    link: '#',
+                    source: 'Webtekno',
+                    date: new Date(Date.now() - 1600000),
+                    image: null
+                },
+                {
+                    title: 'Yeni akıllı telefon modelleri tanıtıldı',
+                    description: 'Beklenen telefonlar nihayet tanıtıldı. Özellikleri ve fiyatları merakla bekleniyordu.',
+                    link: '#',
+                    source: 'ShiftDelete',
+                    date: new Date(Date.now() - 2600000),
+                    image: null
+                }
+            ]
+        };
+
+        const EMOJI = {
+            gundem: '📰',
+            dunya: '🌍',
+            spor: '⚽',
+            ekonomi: '💼',
+            teknoloji: '💻'
+        };
+
+        function timeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+
+            if (minutes < 1) return 'Şimdi';
+            if (minutes < 60) return `${minutes} dk önce`;
+            if (hours < 24) return `${hours} saat önce`;
+            return `${Math.floor(hours / 24)} gün önce`;
+        }
+
+        function createNewsCard(news, category) {
+            const card = document.createElement('a');
+            card.className = 'news-card';
+            card.href = news.link;
+            card.target = '_blank';
+
+            card.innerHTML = `
+                <div class="news-image">
+                    ${news.image ? `<img src="${news.image}" alt="${news.title}">` : EMOJI[category]}
+                </div>
+                <div class="news-content">
+                    <div class="news-title">${news.title}</div>
+                    <div class="news-desc">${news.description}</div>
+                    <div class="news-meta">
+                        <span class="news-source">${news.source}</span>
+                        <span>${timeAgo(news.date)}</span>
+                    </div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        function loadCategory(category) {
+            const section = document.getElementById(category);
+            const loading = section.querySelector('.loading');
+            const grid = section.querySelector('.news-grid');
+
+            setTimeout(() => {
+                loading.style.display = 'none';
+                
+                const news = SAMPLE_NEWS[category] || [];
+                
+                if (news.length === 0) {
+                    grid.innerHTML = `
+                        <div class="error">
+                            <div class="error-icon">📭</div>
+                            <p>Bu kategori için henüz haber yok</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                news.forEach(item => {
+                    grid.appendChild(createNewsCard(item, category));
+                });
+            }, 500);
+        }
+
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const category = tab.dataset.cat;
+
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                document.getElementById(category).classList.add('active');
+
+                // Load if not loaded
+                const grid = document.getElementById(category).querySelector('.news-grid');
+                if (grid.children.length === 0) {
+                    loadCategory(category);
+                }
+            });
+        });
+
+        // Load first category
+        loadCategory('gundem');
+    </script>
+</body>
+</html>
